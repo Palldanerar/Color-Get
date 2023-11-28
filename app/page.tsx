@@ -1,18 +1,33 @@
 "use client"
 
 import {useState} from "react"
+import Image from "next/image"
+ //@ts-ignore
+import ColorThief from "colorthief"
 
 export default function Home() {
 
   const [image, setImage] = useState("")
+  const [mainColor, setMainColor] = useState([])
 
-  const uploadImage = (e) => {;
+  const uploadImage = ( e:any ) => {;
     setImage(URL.createObjectURL(e.target.files[0]))
+  }
+
+  const clearImage = () => {
+    setImage("")
+  }
+
+  const getColors = ( e: any ) => {
+    const colorThief = new ColorThief();
+    setMainColor(colorThief.getColor(e.target))
   }
 
   return (
     <main className="w-full h-auto py-2">
       <div className="w-[800px] h-auto mx-auto">
+        {!image && 
+        
         <div className="flex items-center justify-center w-full">
           <label htmlFor="dropzone-file" className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
             <div className="flex flex-col items-center justify-center pt-5 pb-6">
@@ -26,15 +41,17 @@ export default function Home() {
           </label>
         </div>
 
-      </div>
-      <div>
-      <div className="image">
-        {image ? (
-          <img src={image} alt="uploaded" />
-        ) : (
-          <h2>Put An Image Here...</h2>
-        )}
-      </div>
+        }
+        {image && 
+        <div className="w-full h-auto flex flex-col items-center">
+          <Image src={image} alt="image" width={450} height={350} onLoad={getColors} onDoubleClick={clearImage} className="rounded" />
+          <div className="mt-4">
+            <div className="w-[80px] h-[80px]" style={{background: `rgb(${mainColor[0]}, ${mainColor[1]}, ${mainColor[2]})`}}>
+
+            </div>
+          </div>
+        </div>
+        }
       </div>
     </main>
   )
