@@ -4,11 +4,13 @@ import {useState} from "react"
 import Image from "next/image"
  //@ts-ignore
 import ColorThief from "colorthief"
+import ColorСircle from "./Components/ColorСircle"
 
 export default function Home() {
 
   const [image, setImage] = useState("")
   const [mainColor, setMainColor] = useState([])
+  const [patterColor, setPatterColor] = useState([])
 
   const uploadImage = ( e:any ) => {;
     setImage(URL.createObjectURL(e.target.files[0]))
@@ -21,6 +23,7 @@ export default function Home() {
   const getColors = ( e: any ) => {
     const colorThief = new ColorThief();
     setMainColor(colorThief.getColor(e.target))
+    setPatterColor(colorThief.getPalette(e.target, 5))
   }
 
   return (
@@ -45,9 +48,18 @@ export default function Home() {
         {image && 
         <div className="w-full h-auto flex flex-col items-center">
           <Image src={image} alt="image" width={450} height={350} onLoad={getColors} onDoubleClick={clearImage} className="rounded" />
-          <div className="mt-4">
-            <div className="w-[80px] h-[80px]" style={{background: `rgb(${mainColor[0]}, ${mainColor[1]}, ${mainColor[2]})`}}>
-
+          <div className="w-full mt-4 flex justify-between">
+            <div className="w-1/3">
+              <h2 className="text-white text-lg mb-2">Main Color</h2>
+              <ColorСircle colors={mainColor} />
+            </div>
+            <div className="w-2/3">
+              <h2 className="text-white text-lg text-center mb-2">Patter Color</h2>
+              <div className="w-full flex justify-between">
+                {patterColor.map((color) => {
+                  return <ColorСircle colors={color} />
+                })}
+              </div>
             </div>
           </div>
         </div>
